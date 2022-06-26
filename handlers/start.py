@@ -368,10 +368,11 @@ last_message = []
 @dp.message_handler(content_types=types.ContentType.NEW_CHAT_MEMBERS)
 async def new_chat_member(message: types.Message):
     # print(message)
-    if len(last_message) > 0:
-        await bot.delete_message(chat_id=message.chat.id, message_id=last_message[0])
-        last_message.clear()
-    msg = await bot.send_message(message.chat.id,
-                                 "Добро пожаловать в сообщество We|Run|Eda!"
-                                 "\nНажми на @weruneda_bot и изучи правила сообщества!")
-    last_message.append(msg.message_id)
+    if message.chat.id == '-1001215514029':
+        if len(last_message) > 0:
+            await bot.delete_message(chat_id=message.chat.id, message_id=last_message[0])
+            last_message.clear()
+        msg = await bot.send_message(message.chat.id,
+                                     "Добро пожаловать в сообщество We|Run|Eda!"
+                                     "\nНажми на @weruneda_bot и изучи правила сообщества!")
+        last_message.append(msg.message_id)
