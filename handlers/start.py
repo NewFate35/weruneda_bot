@@ -90,7 +90,8 @@ async def save_obyavlenie(message: types.Message, state: FSMContext):
 async def bot_help(message: types.Message):
     text = ("Список команд: ",
             "/start - Старт",
-            "/help - Получить справку")
+            # "/help - Получить справку"
+            )
 
     await message.answer("\n".join(text))
 
