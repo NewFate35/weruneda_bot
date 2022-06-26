@@ -29,6 +29,15 @@ class IsAdmin(BoundFilter):
         return res
 
 
+class IsPrivateChat(BoundFilter):
+
+    async def check(self, message: types.Message):
+        res = False
+        if message.chat.type == "private":
+            res = True
+        return res
+
+
 def check(user_id):
     res = False
     for admin in config.ADMINS:
@@ -47,27 +56,27 @@ class Training(StatesGroup):
     otziv = State()
 
 
-@dp.message_handler(IsAdmin(), CommandStart())
+@dp.message_handler(IsAdmin(), IsPrivateChat(), CommandStart())
 async def bot_start(message: types.Message):
     await db.add_user(message.from_user.id)
     await message.answer("Приветствую тебя, админ! Mr. Fox🦊 на связи!", reply_markup=markup_main_admin)
     await message.answer("Нажми на кнопку ниже и обязательно прочтите наши правила!", reply_markup=rules_keyboard)
 
 
-@dp.message_handler(CommandStart())
+@dp.message_handler(CommandStart(), IsPrivateChat())
 async def bot_start(message: types.Message):
     await db.add_user(message.from_user.id)
     await message.answer("Приветствую тебя, друг! Mr. Fox🦊 на связи!", reply_markup=markup_main)
-    await message.answer("Нажми на кнопку ниже и обязательно прочтите наши правила! ↓", reply_markup=rules_keyboard)
+    await message.answer("Нажми на кнопку ниже и обязательно прочтите наши правила!", reply_markup=rules_keyboard)
 
 
-@dp.message_handler(IsAdmin(), text="Сделать объявление")
+@dp.message_handler(IsAdmin(), IsPrivateChat(), text="Сделать объявление")
 async def make_obyavlenie(message: types.Message):
     await message.answer("Напиши текст для рассылки:", reply_markup=cancel_markup)
     await Training.obyavlenie.set()
 
 
-@dp.message_handler(IsAdmin(), state=Training.obyavlenie)
+@dp.message_handler(IsAdmin(), IsPrivateChat(), state=Training.obyavlenie)
 async def save_obyavlenie(message: types.Message, state: FSMContext):
     users = await db.select_all_id_users()
     await state.finish()
@@ -77,7 +86,7 @@ async def save_obyavlenie(message: types.Message, state: FSMContext):
     await message.answer("Отправлено!", reply_markup=markup_main_admin)
 
 
-@dp.message_handler(CommandHelp())
+@dp.message_handler(CommandHelp(), IsPrivateChat())
 async def bot_help(message: types.Message):
     text = ("Список команд: ",
             "/start - Старт",
@@ -86,23 +95,23 @@ async def bot_help(message: types.Message):
     await message.answer("\n".join(text))
 
 
-@dp.message_handler(IsAdmin(), text="Режим админа")
+@dp.message_handler(IsAdmin(), IsPrivateChat(), text="Режим админа")
 async def admin_mode(message: types.Message):
     await message.answer("Клавиатура админа активирована", reply_markup=admin_keyboard)
 
 
-@dp.message_handler(IsAdmin(), text="Режим обычного пользователя")
+@dp.message_handler(IsAdmin(), IsPrivateChat(), text="Режим обычного пользователя")
 async def user_mode(message: types.Message):
     await message.answer("Клавиатура юзера активирована", reply_markup=markup_main_admin)
 
 
-@dp.message_handler(text="F.A.Q.")
+@dp.message_handler(IsPrivateChat(), text="F.A.Q.")
 async def faq(message: types.Message):
     await message.answer("Часто задаваемые вопросы:", reply_markup=faq_keyboard)
     # current_path = os.getcwd()
 
 
-@dp.callback_query_handler(text_contains='question_')
+@dp.callback_query_handler(IsPrivateChat(), text_contains='question_')
 async def faq_answers(call: types.CallbackQuery):
     if call.data and call.data.startswith("question_"):
         code = call.data[-1:]
@@ -122,37 +131,37 @@ async def faq_answers(call: types.CallbackQuery):
             await bot.answer_callback_query(call.id)
 
 
-@dp.message_handler(IsAdmin(), text="Открыть регистрацию")
+@dp.message_handler(IsAdmin(), IsPrivateChat(), text="Открыть регистрацию")
 async def open_reg(message: types.Message):
     await db.open_reg()
     await message.answer("Регистрация открыта!")
 
 
-@dp.message_handler(IsAdmin(), text="Закрыть регистрацию")
+@dp.message_handler(IsAdmin(), IsPrivateChat(), text="Закрыть регистрацию")
 async def close_reg(message: types.Message):
     await db.close_reg()
     await message.answer("Регистрация закрыта!")
 
 
-@dp.message_handler(IsAdmin(), text="Отмена", state="*")
+@dp.message_handler(IsAdmin(), IsPrivateChat(), text="Отмена", state="*")
 async def cancel(message: types.Message, state: FSMContext):
     await state.finish()
     await message.answer("Отменено!", reply_markup=markup_main_admin)
 
 
-@dp.message_handler(text="Отмена", state="*")
+@dp.message_handler(IsPrivateChat(), text="Отмена", state="*")
 async def cancel(message: types.Message, state: FSMContext):
     await state.finish()
     await message.answer("Отменено!", reply_markup=markup_main)
 
 
-@dp.message_handler(text="Оставить отзыв")
+@dp.message_handler(IsPrivateChat(), text="Оставить отзыв")
 async def otziv(message: types.Message):
     await message.answer("Напишите свой отзыв:", reply_markup=cancel_markup)
     await Training.otziv.set()
 
 
-@dp.message_handler(state=Training.otziv)
+@dp.message_handler(IsPrivateChat(), state=Training.otziv)
 async def otziv(message: types.Message, state: FSMContext):
     if message.from_user.username:
         username = message.from_user.username
@@ -172,7 +181,7 @@ async def otziv(message: types.Message, state: FSMContext):
         await message.answer("Отзыв успешно отправлен, спасибо вам за обратную связь!", reply_markup=markup_main)
 
 
-@dp.message_handler(text="Записаться/Отменить запись на субботнюю тренировку")
+@dp.message_handler(IsPrivateChat(), text="Записаться/Отменить запись на субботнюю тренировку")
 async def training(message: types.Message):
     check = await db.check_user(message.from_user.id)
     res = await db.check_reg_status()
@@ -196,7 +205,7 @@ async def training(message: types.Message):
             await message.answer("Регистрация закрыта!")
 
 
-@dp.callback_query_handler(text="edit")
+@dp.callback_query_handler(IsPrivateChat(), text="edit")
 async def edit(call: types.CallbackQuery):
     res = await db.check_reg_status()
     if res['status']:
@@ -206,7 +215,7 @@ async def edit(call: types.CallbackQuery):
         await bot.send_message(call.from_user.id, "Регистрация уже закрыта! Изменить информацию нельзя")
 
 
-@dp.callback_query_handler(text="cancel")
+@dp.callback_query_handler(IsPrivateChat(), text="cancel")
 async def cancel(call: types.CallbackQuery):
     res = await db.check_reg_status()
     if res['status']:
@@ -220,7 +229,7 @@ async def cancel(call: types.CallbackQuery):
         await bot.send_message(call.from_user.id, "Регистрация уже закрыта! Изменить информацию нельзя")
 
 
-@dp.message_handler(IsAdmin(), text="Кол-во участников")
+@dp.message_handler(IsAdmin(), IsPrivateChat(), text="Кол-во участников")
 async def count(message: types.Message, state: FSMContext):
     count = await db.count()
     children_count = await db.children_count()
@@ -231,34 +240,34 @@ async def count(message: types.Message, state: FSMContext):
         reply_markup=breakfast_info_keyboard)
 
 
-@dp.message_handler(IsAdmin(), commands='delete_all')
+@dp.message_handler(IsAdmin(), IsPrivateChat(), commands='delete_all')
 async def delete_all(message: types.Message, state: FSMContext):
     await db.delete_all()
     await message.answer("Таблица очищена!")
 
 
-@dp.message_handler(state=Training.FIO)
+@dp.message_handler(IsPrivateChat(), state=Training.FIO)
 async def save_fio(message: types.Message, state: FSMContext):
     await state.update_data(FIO=message.text)
     await message.answer("Введите свой телефон:")
     await Training.phone.set()
 
 
-@dp.message_handler(state=Training.phone)
+@dp.message_handler(IsPrivateChat(), state=Training.phone)
 async def save_phone(message: types.Message, state: FSMContext):
     await state.update_data(phone=message.text)
     await message.answer("Кол-во детей:")
     await Training.children_count.set()
 
 
-@dp.message_handler(state=Training.children_count)
+@dp.message_handler(IsPrivateChat(), state=Training.children_count)
 async def save_children_count(message: types.Message, state: FSMContext):
     await state.update_data(children_count=message.text)
     await message.answer("Выберите подходящий для вас вариант", reply_markup=breakfast_keyboard)
     await Training.breakfast.set()
 
 
-@dp.callback_query_handler(text="without_breakfast", state=Training.breakfast)
+@dp.callback_query_handler(IsPrivateChat(), text="without_breakfast", state=Training.breakfast)
 async def without_breakfast(call: types.CallbackQuery, state: FSMContext):
     reg_data = await state.get_data()
     user_id = call.from_user.id
@@ -281,21 +290,21 @@ async def without_breakfast(call: types.CallbackQuery, state: FSMContext):
     await state.finish()
 
 
-@dp.callback_query_handler(text="meat_breakfast", state=Training.breakfast)
+@dp.callback_query_handler(IsPrivateChat(), text="meat_breakfast", state=Training.breakfast)
 async def meat_breakfast(call: types.CallbackQuery, state: FSMContext):
     await state.update_data(breakfast="мясной")
     await bot.send_message(call.from_user.id, text="Кол-во порций завтрака:")
     await Training.breakfast_count.set()
 
 
-@dp.callback_query_handler(text="vegan_breakfast", state=Training.breakfast)
+@dp.callback_query_handler(IsPrivateChat(), text="vegan_breakfast", state=Training.breakfast)
 async def vegan_breakfast(call: types.CallbackQuery, state: FSMContext):
     await state.update_data(breakfast="веган")
     await bot.send_message(call.from_user.id, text="Кол-во порций завтрака:")
     await Training.breakfast_count.set()
 
 
-@dp.message_handler(state=Training.breakfast_count)
+@dp.message_handler(IsPrivateChat(), state=Training.breakfast_count)
 async def save_breakfast_count(message: types.Message, state: FSMContext):
     await state.update_data(breakfast_count=int(message.text))
     reg_data = await state.get_data()
@@ -324,7 +333,7 @@ async def save_breakfast_count(message: types.Message, state: FSMContext):
     await state.finish()
 
 
-@dp.callback_query_handler(IsAdmin(), text="breakfast_info")
+@dp.callback_query_handler(IsAdmin(), IsPrivateChat(), text="breakfast_info")
 async def breakfast_info(call: types.CallbackQuery):
     await call.message.answer("Отправляю таблицу: ")
 
@@ -355,7 +364,7 @@ def delete_file(date):
 last_message = []
 
 
-@dp.message_handler(content_types=types.ContentType.NEW_CHAT_MEMBERS)
+@dp.message_handler(IsPrivateChat(), content_types=types.ContentType.NEW_CHAT_MEMBERS)
 async def new_chat_member(message: types.Message):
     # print(message)
     if len(last_message) > 0:
