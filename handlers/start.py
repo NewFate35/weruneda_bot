@@ -365,7 +365,7 @@ def delete_file(date):
 last_message = []
 
 
-@dp.message_handler(IsPrivateChat(), content_types=types.ContentType.NEW_CHAT_MEMBERS)
+@dp.message_handler(content_types=types.ContentType.NEW_CHAT_MEMBERS)
 async def new_chat_member(message: types.Message):
     # print(message)
     if len(last_message) > 0:
