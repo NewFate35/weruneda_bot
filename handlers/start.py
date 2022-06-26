@@ -112,7 +112,7 @@ async def faq(message: types.Message):
     # current_path = os.getcwd()
 
 
-@dp.callback_query_handler(IsPrivateChat(), text_contains='question_')
+@dp.callback_query_handler(text_contains='question_')
 async def faq_answers(call: types.CallbackQuery):
     if call.data and call.data.startswith("question_"):
         code = call.data[-1:]
@@ -206,7 +206,7 @@ async def training(message: types.Message):
             await message.answer("Регистрация закрыта!")
 
 
-@dp.callback_query_handler(IsPrivateChat(), text="edit")
+@dp.callback_query_handler(text="edit")
 async def edit(call: types.CallbackQuery):
     res = await db.check_reg_status()
     if res['status']:
@@ -216,7 +216,7 @@ async def edit(call: types.CallbackQuery):
         await bot.send_message(call.from_user.id, "Регистрация уже закрыта! Изменить информацию нельзя")
 
 
-@dp.callback_query_handler(IsPrivateChat(), text="cancel")
+@dp.callback_query_handler(text="cancel")
 async def cancel(call: types.CallbackQuery):
     res = await db.check_reg_status()
     if res['status']:
@@ -268,7 +268,7 @@ async def save_children_count(message: types.Message, state: FSMContext):
     await Training.breakfast.set()
 
 
-@dp.callback_query_handler(IsPrivateChat(), text="without_breakfast", state=Training.breakfast)
+@dp.callback_query_handler(text="without_breakfast", state=Training.breakfast)
 async def without_breakfast(call: types.CallbackQuery, state: FSMContext):
     reg_data = await state.get_data()
     user_id = call.from_user.id
@@ -291,14 +291,14 @@ async def without_breakfast(call: types.CallbackQuery, state: FSMContext):
     await state.finish()
 
 
-@dp.callback_query_handler(IsPrivateChat(), text="meat_breakfast", state=Training.breakfast)
+@dp.callback_query_handler(text="meat_breakfast", state=Training.breakfast)
 async def meat_breakfast(call: types.CallbackQuery, state: FSMContext):
     await state.update_data(breakfast="мясной")
     await bot.send_message(call.from_user.id, text="Кол-во порций завтрака:")
     await Training.breakfast_count.set()
 
 
-@dp.callback_query_handler(IsPrivateChat(), text="vegan_breakfast", state=Training.breakfast)
+@dp.callback_query_handler(text="vegan_breakfast", state=Training.breakfast)
 async def vegan_breakfast(call: types.CallbackQuery, state: FSMContext):
     await state.update_data(breakfast="веган")
     await bot.send_message(call.from_user.id, text="Кол-во порций завтрака:")
@@ -334,7 +334,7 @@ async def save_breakfast_count(message: types.Message, state: FSMContext):
     await state.finish()
 
 
-@dp.callback_query_handler(IsAdmin(), IsPrivateChat(), text="breakfast_info")
+@dp.callback_query_handler(IsAdmin(), text="breakfast_info")
 async def breakfast_info(call: types.CallbackQuery):
     await call.message.answer("Отправляю таблицу: ")
 
