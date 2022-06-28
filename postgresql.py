@@ -60,6 +60,11 @@ class Database:
         status BOOLEAN DEFAULT FALSE
         );
         
+        CREATE TABLE IF NOT EXISTS last_message(
+        id INT PRIMARY KEY,
+        message_id BIGINT
+        );
+        
         INSERT INTO registration(id, status) VALUES (1, FALSE) ON CONFLICT DO NOTHING ;
         """
         await self.execute(sql, execute=True)
@@ -75,6 +80,10 @@ class Database:
         sql = "SELECT telegram_id FROM users"
         return await self.execute(sql, fetch=True)
 
+    async def select_last_msg_id(self):
+        sql = "SELECT message_id FROM last_message WHERE id=1"
+        return await self.execute(sql, fetch=True)
+
     async def get_users_info(self):
         sql = "SELECT * FROM saturday_training"
         return await self.execute(sql, fetch=True)
@@ -82,6 +91,11 @@ class Database:
     async def add_user(self, telegram_id):
         sql = "INSERT INTO users(telegram_id) VALUES ($1) ON CONFLICT DO NOTHING"
         return await self.execute(sql, telegram_id, fetchrow=True)
+
+    async def insert_last_message_id(self, msg_id):
+        sql = "INSERT INTO last_message(id, message_id) VALUES (1, $1) ON CONFLICT (id) " \
+              "DO UPDATE SET message_id=$1 WHERE last_message.id=1"
+        return await self.execute(sql, msg_id, fetchrow=True)
 
     async def open_reg(self):
         sql = "UPDATE registration SET status=True WHERE id=1"

@@ -56,6 +56,19 @@ class Training(StatesGroup):
     otziv = State()
 
 
+@dp.message_handler(content_types=types.ContentType.NEW_CHAT_MEMBERS)
+async def new_chat_member(message: types.Message):
+    last_msg = await db.select_last_msg_id()
+
+    if len(last_msg) > 0:
+        await bot.delete_message(chat_id=message.chat.id, message_id=last_msg[0]['message_id'])
+    msg = await bot.send_message(message.chat.id,
+                                 "Добро пожаловать в сообщество We|Run|Eda!"
+                                 "\nНажми на @weruneda_bot и изучи правила сообщества!")
+
+    await db.insert_last_message_id(msg.message_id)
+
+
 @dp.message_handler(IsAdmin(), IsPrivateChat(), CommandStart())
 async def bot_start(message: types.Message):
     await db.add_user(message.from_user.id)
@@ -360,19 +373,3 @@ def delete_file(date):
     current = os.getcwd()
     if os.path.isfile(f'{current}\\{date}.xlsx'):
         os.remove(f'{current}\\{date}.xlsx')
-
-
-last_message = []
-
-
-@dp.message_handler(content_types=types.ContentType.NEW_CHAT_MEMBERS)
-async def new_chat_member(message: types.Message):
-    # print(message)
-    if message.chat.id == '-1001215514029':
-        if len(last_message) > 0:
-            await bot.delete_message(chat_id=message.chat.id, message_id=last_message[0])
-            last_message.clear()
-        msg = await bot.send_message(message.chat.id,
-                                     "Добро пожаловать в сообщество We|Run|Eda!"
-                                     "\nНажми на @weruneda_bot и изучи правила сообщества!")
-        last_message.append(msg.message_id)
