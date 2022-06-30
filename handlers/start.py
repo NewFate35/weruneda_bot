@@ -73,6 +73,18 @@ async def new_chat_member(message: types.Message):
     await db.insert_last_message_id(msg.message_id)
 
 
+@dp.message_handler(IsAdmin(), IsPrivateChat(), text="Отмена", state="*")
+async def cancel(message: types.Message, state: FSMContext):
+    await state.finish()
+    await message.answer("Отменено!", reply_markup=markup_main_admin)
+
+
+@dp.message_handler(IsPrivateChat(), text="Отмена", state="*")
+async def cancel(message: types.Message, state: FSMContext):
+    await state.finish()
+    await message.answer("Отменено!", reply_markup=markup_main)
+
+
 @dp.message_handler(IsAdmin(), IsPrivateChat(), CommandStart())
 async def bot_start(message: types.Message):
     await db.add_user(message.from_user.id)
@@ -158,18 +170,6 @@ async def open_reg(message: types.Message):
 async def close_reg(message: types.Message):
     await db.close_reg()
     await message.answer("Регистрация закрыта!")
-
-
-@dp.message_handler(IsAdmin(), IsPrivateChat(), text="Отмена", state="*")
-async def cancel(message: types.Message, state: FSMContext):
-    await state.finish()
-    await message.answer("Отменено!", reply_markup=markup_main_admin)
-
-
-@dp.message_handler(IsPrivateChat(), text="Отмена", state="*")
-async def cancel(message: types.Message, state: FSMContext):
-    await state.finish()
-    await message.answer("Отменено!", reply_markup=markup_main)
 
 
 @dp.message_handler(IsPrivateChat(), text="Оставить отзыв")
