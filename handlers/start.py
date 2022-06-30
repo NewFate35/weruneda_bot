@@ -60,11 +60,19 @@ class Training(StatesGroup):
 async def new_chat_member(message: types.Message):
     last_msg = await db.select_last_msg_id()
 
+    text = f"Добро пожаловать в сообщество We|Run|Eda!"
+    "\nНажми на @weruneda_bot и изучи правила сообщества!"
+
+    if message.from_user.first_name:
+        text = f"Добро пожаловать, {message.from_user.first_name}, в сообщество We|Run|Eda!"
+        "\nНажми на @weruneda_bot и изучи правила сообщества!"
+    elif message.from_user.full_name:
+        text = f"Добро пожаловать, {message.from_user.full_name}, в сообщество We|Run|Eda!"
+        "\nНажми на @weruneda_bot и изучи правила сообщества!"
+
     if len(last_msg) > 0:
         await bot.delete_message(chat_id=message.chat.id, message_id=last_msg[0]['message_id'])
-    msg = await bot.send_message(message.chat.id,
-                                 "Добро пожаловать в сообщество We|Run|Eda!"
-                                 "\nНажми на @weruneda_bot и изучи правила сообщества!")
+    msg = await bot.send_message(message.chat.id, text=text)
 
     await db.insert_last_message_id(msg.message_id)
 
