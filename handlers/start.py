@@ -126,7 +126,6 @@ async def user_mode(message: types.Message):
 @dp.message_handler(IsPrivateChat(), text="F.A.Q.")
 async def faq(message: types.Message):
     await message.answer("Часто задаваемые вопросы:", reply_markup=faq_keyboard)
-    # current_path = os.getcwd()
 
 
 @dp.callback_query_handler(text_contains='question_')
@@ -274,7 +273,7 @@ async def save_fio(message: types.Message, state: FSMContext):
 @dp.message_handler(IsPrivateChat(), state=Training.phone)
 async def save_phone(message: types.Message, state: FSMContext):
     await state.update_data(phone=message.text)
-    await message.answer("Кол-во детей:")
+    await message.answer("Вы будете с детьми? Если да, то отправьте их кол-во, иначе - 0")
     await Training.children_count.set()
 
 
