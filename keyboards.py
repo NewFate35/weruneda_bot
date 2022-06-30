@@ -10,7 +10,7 @@ cancel_markup = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
 cancel_markup.add("Отмена")
 
 markup_main_admin = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
-markup_main_admin.add("Записаться/Отменить запись на субботнюю тренировку")
+markup_main_admin.add("Субботняя тренировка и завтрак\nРегистрация/Отмена записи")
 markup_main_admin.add("F.A.Q.")
 # markup_main_admin.add("Партнерам")
 markup_main_admin.add("Оставить отзыв")
