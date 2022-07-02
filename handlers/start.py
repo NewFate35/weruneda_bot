@@ -198,7 +198,7 @@ async def otziv(message: types.Message, state: FSMContext):
         await message.answer("Отзыв успешно отправлен, спасибо вам за обратную связь!", reply_markup=markup_main)
 
 
-@dp.message_handler(IsPrivateChat(), text="Записаться/Отменить запись на субботнюю тренировку")
+@dp.message_handler(IsPrivateChat(), text="Субботняя тренировка и завтрак\nРегистрация/Отмена записи")
 async def training(message: types.Message):
     check = await db.check_user(message.from_user.id)
     res = await db.check_reg_status()

@@ -1,7 +1,7 @@
 from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 
 markup_main = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
-markup_main.add("Записаться/Отменить запись на субботнюю тренировку")
+markup_main.add("Субботняя тренировка и завтрак\nРегистрация/Отмена записи")
 markup_main.add("F.A.Q.")
 # markup_main.add("Партнерам")
 markup_main.add("Оставить отзыв")
@@ -50,7 +50,7 @@ rules_keyboard.add(button)
 breakfast_keyboard = InlineKeyboardMarkup(row_width=1)
 button1 = InlineKeyboardButton(text="Без завтрака", callback_data="without_breakfast")
 button2 = InlineKeyboardButton(text="С мясным завтраком", callback_data="meat_breakfast")
-button3 = InlineKeyboardButton(text="Веган завтрак", callback_data="vegan_breakfast")
+button3 = InlineKeyboardButton(text="Вегетарианский завтрак", callback_data="vegan_breakfast")
 breakfast_keyboard.add(button1, button2, button3)
 
 edit_keyboard = InlineKeyboardMarkup(row_width=1)
