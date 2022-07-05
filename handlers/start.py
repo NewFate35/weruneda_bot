@@ -68,7 +68,7 @@ async def new_chat_member(message: types.Message):
 
     if len(last_msg) > 0:
         await bot.delete_message(chat_id=message.chat.id, message_id=last_msg[0]['message_id'])
-    msg = await bot.send_message(message.chat.id, text=text)
+    msg = await message.answer(text=text)
 
     await db.insert_last_message_id(msg.message_id)
 
