@@ -65,6 +65,7 @@ async def new_chat_member(message: types.Message):
     if message['new_chat_member']['first_name']:
         text = f"Добро пожаловать, {message['new_chat_member']['first_name']}, " \
                f"в сообщество We|Run|Eda!\nНажми на @weruneda_bot и изучи правила сообщества!"
+        logging.info(f"Вступил новый участник - {message['new_chat_member']['first_name']}")
 
     if len(last_msg) > 0:
         await bot.delete_message(chat_id=message.chat.id, message_id=last_msg[0]['message_id'])
