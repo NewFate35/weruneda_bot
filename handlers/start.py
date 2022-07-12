@@ -153,7 +153,7 @@ async def faq_answers(call: types.CallbackQuery):
                     await bot.send_photo(call.from_user.id, caption=v, photo=InputFile('парковка.png'))
                 elif code == 5:
                     await bot.send_document(call.from_user.id,
-                                            document=InputFile(f"Правила_корпоративной_культуры.pdf"),
+                                            document=InputFile(f"Правила_сообщества.pdf"),
                                             caption="Правила корпоративной культуры сообщества We|Run|Eda")
                 else:
                     await bot.send_message(call.from_user.id, text=v)
