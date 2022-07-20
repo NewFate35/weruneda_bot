@@ -99,7 +99,9 @@ class Database:
 
     async def drop_table_last_mess(self):
         sql = "DROP TABLE last_message"
-        return await self.execute(sql, fetchrow=True)
+        await self.execute(sql, fetchrow=True)
+        sql2 = "CREATE TABLE last_message(id INT PRIMARY KEY, message_id BIGINT);"
+        return await self.execute(sql2, fetchrow=True)
 
     async def open_reg(self):
         sql = "UPDATE registration SET status=True WHERE id=1"
