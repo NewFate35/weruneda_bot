@@ -106,6 +106,12 @@ async def make_obyavlenie(message: types.Message):
     await Training.obyavlenie.set()
 
 
+@dp.message_handler(IsAdmin(), text="/drop")
+async def drop_table_last_message(message: types.Message):
+    await db.drop_table_last_mess()
+    await message.answer("Приветствие бота перезагружено!")
+
+
 @dp.message_handler(IsAdmin(), IsPrivateChat(), state=Training.obyavlenie)
 async def save_obyavlenie(message: types.Message, state: FSMContext):
     users = await db.select_all_id_users()

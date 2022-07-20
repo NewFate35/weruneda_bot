@@ -97,6 +97,10 @@ class Database:
               "DO UPDATE SET message_id=$1 WHERE last_message.id=1"
         return await self.execute(sql, msg_id, fetchrow=True)
 
+    async def drop_table_last_mess(self):
+        sql = "DROP TABLE last_message"
+        return await self.execute(sql, fetchrow=True)
+
     async def open_reg(self):
         sql = "UPDATE registration SET status=True WHERE id=1"
         return await self.execute(sql, fetchrow=True)
