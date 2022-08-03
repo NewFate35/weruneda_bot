@@ -2,6 +2,7 @@ from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeybo
 
 markup_main = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
 markup_main.add("Субботняя тренировка и завтрак\nРегистрация/Отмена записи")
+markup_main.add("6.08 20:30 забег с кофейней DUO")
 markup_main.add("F.A.Q.")
 markup_main.add("Оставить отзыв")
 

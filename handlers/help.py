@@ -14,7 +14,7 @@ class Duo(StatesGroup):
     phone = State()
 
 
-@dp.message_handler(IsAdmin(), text="6.08 20:30 забег с кофейней DUO")
+@dp.message_handler(text="6.08 20:30 забег с кофейней DUO")
 async def start_duo_run(message: types.Message):
     await message.answer("Введите ваше ФИО:",
                          reply_markup=cancel_markup)
