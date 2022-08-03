@@ -3,7 +3,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.builtin import CommandHelp
 from aiogram.dispatcher.filters.state import StatesGroup, State
 
-from start import check
+from handlers.start import check
 from handlers.start import IsAdmin
 from keyboards import cancel_markup, markup_main_admin, markup_main
 from loader import dp, bot, db
