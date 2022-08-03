@@ -136,6 +136,10 @@ class Database:
         sql = "SELECT COUNT(*) FROM saturday_training"
         return await self.execute(sql, fetchval=True)
 
+    async def duo_count(self):
+        sql = "SELECT COUNT(*) FROM duo_run"
+        return await self.execute(sql, fetchval=True)
+
     async def children_count(self):
         sql = "SELECT SUM(children_count) FROM saturday_training"
         return await self.execute(sql, fetchval=True)

@@ -19,6 +19,7 @@ admin_keyboard = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
 admin_keyboard.add("Открыть регистрацию")
 admin_keyboard.add("Закрыть регистрацию")
 admin_keyboard.add("Кол-во участников")
+admin_keyboard.add("Кол-во участников с DUO")
 admin_keyboard.add("Сделать объявление")
 admin_keyboard.add("Режим обычного пользователя")
 

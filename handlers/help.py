@@ -41,3 +41,9 @@ async def save_duo_phone(message: types.Message, state: FSMContext):
                              reply_markup=markup_main)
 
     await state.finish()
+
+
+@dp.message_handler(IsAdmin(), text="Кол-во участников с DUO")
+async def count(message: types.Message, state: FSMContext):
+    count = await db.duo_count()
+    await message.answer(f"Всего участников: {count}")
