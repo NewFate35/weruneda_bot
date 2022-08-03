@@ -65,6 +65,13 @@ class Database:
         message_id BIGINT
         );
         
+        CREATE TABLE IF NOT EXISTS duo_run(
+        id SERIAL PRIMARY KEY,
+        telegram_id BIGINT UNIQUE,
+        fio VARCHAR(255),
+        phone VARCHAR(255)
+        );
+        
         INSERT INTO registration(id, status) VALUES (1, FALSE) ON CONFLICT DO NOTHING ;
         """
         await self.execute(sql, execute=True)
@@ -75,6 +82,10 @@ class Database:
               "SET FIO=$2, phone=$3, children_count=$4, meat_count=$5, vegan_count=$6;"
         return await self.execute(sql, user_id, FIO, phone, int(children_count), int(meat_count), int(vegan_count),
                                   fetchrow=True)
+
+    async def add_user_duo_run(self, telegram_id, fio, phone):
+        sql = "INSERT INTO duo_run(telegram_id, fio, phone) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING"
+        return await self.execute(sql, telegram_id, fio, phone, fetchrow=True)
 
     async def select_all_id_users(self):
         sql = "SELECT telegram_id FROM users"
@@ -100,8 +111,6 @@ class Database:
     async def drop_table_last_mess(self):
         sql = "TRUNCATE TABLE last_message"
         return await self.execute(sql, fetchrow=True)
-        # sql2 = "CREATE TABLE last_message(id INT PRIMARY KEY, message_id BIGINT);"
-        # return await self.execute(sql2, fetchrow=True)
 
     async def open_reg(self):
         sql = "UPDATE registration SET status=True WHERE id=1"

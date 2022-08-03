@@ -3,7 +3,6 @@ from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeybo
 markup_main = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
 markup_main.add("Субботняя тренировка и завтрак\nРегистрация/Отмена записи")
 markup_main.add("F.A.Q.")
-# markup_main.add("Партнерам")
 markup_main.add("Оставить отзыв")
 
 cancel_markup = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
@@ -11,8 +10,8 @@ cancel_markup.add("Отмена")
 
 markup_main_admin = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
 markup_main_admin.add("Субботняя тренировка и завтрак\nРегистрация/Отмена записи")
+markup_main_admin.add("6.08 20:30 забег с кофейней DUO")
 markup_main_admin.add("F.A.Q.")
-# markup_main_admin.add("Партнерам")
 markup_main_admin.add("Оставить отзыв")
 markup_main_admin.add("Режим админа")
 
