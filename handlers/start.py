@@ -47,7 +47,7 @@ def check(user_id):
 
 
 class Training(StatesGroup):
-    FIO = State()
+    fullname = State()
     phone = State()
     children_count = State()
     breakfast = State()
@@ -206,7 +206,7 @@ async def otziv(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(IsPrivateChat(), text="Субботняя тренировка и завтрак\nРегистрация/Отмена записи")
-async def training(message: types.Message):
+async def training(message: types.Message, state: FSMContext):
     check = await db.check_user(message.from_user.id)
     res = await db.check_reg_status()
     if check is not None:
@@ -223,18 +223,29 @@ async def training(message: types.Message):
         await message.answer(text=text, reply_markup=edit_keyboard)
     else:
         if res['status']:
-            await message.answer("Введите своё ФИО:", reply_markup=cancel_markup)
-            await Training.FIO.set()
+            check_user_data = await db.check_user_data(message.from_user.id)
+            if check_user_data:
+                await state.update_data(new_data=False)
+                await state.update_data(FIO=check_user_data['full_name'])
+                await state.update_data(phone=check_user_data['phone'])
+                await message.answer("Вы будете с детьми? Если да, то отправьте их кол-во, иначе - 0")
+                await Training.children_count.set()
+                # print(check_user_data)
+            else:
+                await state.update_data(new_data=True)
+                await message.answer("Введите своё ФИО:", reply_markup=cancel_markup)
+                await Training.fullname.set()
         else:
             await message.answer("Регистрация закрыта!")
 
 
 @dp.callback_query_handler(text="edit")
-async def edit(call: types.CallbackQuery):
+async def edit(call: types.CallbackQuery, state: FSMContext):
     res = await db.check_reg_status()
     if res['status']:
+        await state.update_data(new_data=True)
         await bot.send_message(call.from_user.id, "Введите своё ФИО:", reply_markup=cancel_markup)
-        await Training.FIO.set()
+        await Training.fullname.set()
     else:
         await bot.send_message(call.from_user.id, "Регистрация уже закрыта! Изменить информацию нельзя")
 
@@ -270,7 +281,7 @@ async def delete_all(message: types.Message, state: FSMContext):
     await message.answer("Таблица очищена!")
 
 
-@dp.message_handler(IsPrivateChat(), state=Training.FIO)
+@dp.message_handler(IsPrivateChat(), state=Training.fullname)
 async def save_fio(message: types.Message, state: FSMContext):
     await state.update_data(FIO=message.text)
     await message.answer("Введите свой телефон:")
@@ -298,13 +309,16 @@ async def without_breakfast(call: types.CallbackQuery, state: FSMContext):
     FIO = reg_data['FIO']
     phone = reg_data['phone']
     children_count = reg_data['children_count']
+
+    if reg_data['new_data']:
+        await db.add_or_update_user_data(call.from_user.id, FIO, phone)
     await db.add_user_training(user_id, FIO, phone, children_count, meat_count=0, vegan_count=0)
 
     if check(call.from_user.id):
         await bot.send_message(call.from_user.id,
                                text=f"ФИО: {FIO}\nТелефон: {phone}\nДетей: {children_count}\n"
                                     f"Успешная регистрация на тренировку без завтрака!",
-                               reply_markup=markup_main_admin)
+                               reply_markup=edit_keyboard)
         await bot.send_message(call.message.from_user.id,
                                text="Не забудь про оплату!\nГрупповая тренировка - 100₽\nТренировка + завтрак - 400₽",
                                reply_markup=markup_main_admin)
@@ -312,7 +326,7 @@ async def without_breakfast(call: types.CallbackQuery, state: FSMContext):
         await bot.send_message(call.from_user.id,
                                text=f"ФИО: {FIO}\nТелефон: {phone}\nДетей: {children_count}\n"
                                     f"Успешная регистрация на тренировку без завтрака!",
-                               reply_markup=markup_main)
+                               reply_markup=edit_keyboard)
         await bot.send_message(call.message.from_user.id,
                                text="Не забудь про оплату!\nГрупповая тренировка - 100₽\nТренировка + завтрак - 400₽",
                                reply_markup=markup_main)
@@ -344,6 +358,10 @@ async def save_breakfast_count(message: types.Message, state: FSMContext):
     children_count = reg_data['children_count']
     breakfast = reg_data['breakfast']
     breakfast_count = reg_data['breakfast_count']
+
+    if reg_data['new_data']:
+        await db.add_or_update_user_data(message.from_user.id, FIO, phone)
+
     if breakfast == 'мясной':
         await db.add_user_training(user_id, FIO, phone, children_count, meat_count=breakfast_count, vegan_count=0)
     else:
@@ -353,14 +371,14 @@ async def save_breakfast_count(message: types.Message, state: FSMContext):
         await message.answer(
             text=f"ФИО: {FIO}\nТелефон: {phone}\nДетей: {children_count}\nКол-во порций завтрака: {breakfast_count}\n"
                  f"Успешная регистрация на тренировку и {breakfast} завтрак!",
-            reply_markup=markup_main_admin)
+            reply_markup=edit_keyboard)
         await message.answer(text="Не забудь про оплату!\nГрупповая тренировка - 100₽\nТренировка + завтрак - 400₽",
                              reply_markup=markup_main_admin)
     else:
         await message.answer(
             text=f"ФИО: {FIO}\nТелефон: {phone}\nДетей: {children_count}\nКол-во порций завтрака: {breakfast_count}\n"
                  f"Успешная регистрация на тренировку и {breakfast} завтрак!",
-            reply_markup=markup_main)
+            reply_markup=edit_keyboard)
         await message.answer(text="Не забудь про оплату!\nГрупповая тренировка - 100₽\nТренировка + завтрак - 400₽",
                              reply_markup=markup_main)
     await state.finish()

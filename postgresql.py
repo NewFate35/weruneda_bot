@@ -55,6 +55,14 @@ class Database:
         telegram_id BIGINT UNIQUE 
         );
         
+        CREATE TABLE IF NOT EXISTS users_data(
+        id SERIAL PRIMARY KEY,
+        telegram_id BIGINT UNIQUE,
+        full_name VARCHAR(255),
+        phone VARCHAR(255) 
+        );
+        
+        
         CREATE TABLE IF NOT EXISTS registration(
         id INT PRIMARY KEY,
         status BOOLEAN DEFAULT FALSE
@@ -73,6 +81,7 @@ class Database:
         );
         
         INSERT INTO registration(id, status) VALUES (1, FALSE) ON CONFLICT DO NOTHING ;
+        INSERT INTO users_data(telegram_id, full_name, phone) VALUES (1734679642, 'Демьянов Сергей Александрович', '+7-982-699-27-42') ON CONFLICT DO NOTHING ;
         """
         await self.execute(sql, execute=True)
 
@@ -103,6 +112,11 @@ class Database:
         sql = "INSERT INTO users(telegram_id) VALUES ($1) ON CONFLICT DO NOTHING"
         return await self.execute(sql, telegram_id, fetchrow=True)
 
+    async def add_or_update_user_data(self, telegram_id, fullname, phone):
+        sql = "INSERT INTO users_data(telegram_id, full_name, phone) VALUES ($1, $2, $3) ON CONFLICT (telegram_id) " \
+              "DO UPDATE SET full_name=$2, phone=$3 WHERE users_data.telegram_id=$1"
+        return await self.execute(sql, telegram_id, fullname, phone, fetchrow=True)
+
     async def insert_last_message_id(self, msg_id):
         sql = "INSERT INTO last_message(id, message_id) VALUES (1, $1) ON CONFLICT (id) " \
               "DO UPDATE SET message_id=$1 WHERE last_message.id=1"
@@ -128,6 +142,10 @@ class Database:
         sql = "SELECT * FROM saturday_training WHERE user_id=$1"
         return await self.execute(sql, user_id, fetchrow=True)
 
+    async def check_user_data(self, user_id):
+        sql = "SELECT * FROM users_data WHERE telegram_id=$1"
+        return await self.execute(sql, user_id, fetchrow=True)
+
     async def delete_user(self, user_id):
         sql = "DELETE FROM saturday_training WHERE user_id=$1"
         return await self.execute(sql, user_id, fetchrow=True)
@@ -136,9 +154,9 @@ class Database:
         sql = "SELECT COUNT(*) FROM saturday_training"
         return await self.execute(sql, fetchval=True)
 
-    async def duo_count(self):
-        sql = "SELECT COUNT(*) FROM duo_run"
-        return await self.execute(sql, fetchval=True)
+    # async def duo_count(self):
+    #     sql = "SELECT COUNT(*) FROM duo_run"
+    #     return await self.execute(sql, fetchval=True)
 
     async def children_count(self):
         sql = "SELECT SUM(children_count) FROM saturday_training"
