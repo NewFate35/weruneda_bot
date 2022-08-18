@@ -228,7 +228,7 @@ async def training(message: types.Message, state: FSMContext):
                 await state.update_data(new_data=False)
                 await state.update_data(FIO=check_user_data['full_name'])
                 await state.update_data(phone=check_user_data['phone'])
-                await message.answer("Вы будете с детьми? Если да, то отправьте их кол-во, иначе - 0")
+                await message.answer("Вы будете с детьми? Если да, то отправьте их кол-во, иначе - 0", reply_markup=cancel_markup)
                 await Training.children_count.set()
                 # print(check_user_data)
             else:
