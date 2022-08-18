@@ -81,7 +81,6 @@ class Database:
         );
         
         INSERT INTO registration(id, status) VALUES (1, FALSE) ON CONFLICT DO NOTHING ;
-        INSERT INTO users_data(telegram_id, full_name, phone) VALUES (1734679642, 'Демьянов Сергей Александрович', '+7-982-699-27-42') ON CONFLICT DO NOTHING ;
         """
         await self.execute(sql, execute=True)
 
@@ -154,9 +153,9 @@ class Database:
         sql = "SELECT COUNT(*) FROM saturday_training"
         return await self.execute(sql, fetchval=True)
 
-    # async def duo_count(self):
-    #     sql = "SELECT COUNT(*) FROM duo_run"
-    #     return await self.execute(sql, fetchval=True)
+    async def duo_count(self):
+        sql = "SELECT COUNT(*) FROM duo_run"
+        return await self.execute(sql, fetchval=True)
 
     async def children_count(self):
         sql = "SELECT SUM(children_count) FROM saturday_training"
