@@ -1,5 +1,6 @@
-from .start import dp
-from .help import dp
-from .chat_member import dp
+from .admins import dp
+from .users import dp
+from .satturday_training import dp
+from .duo_training import dp
 
-__all__ = ["dp"]
+__all__ = ['dp']

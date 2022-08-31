@@ -169,6 +169,10 @@ class Database:
         sql = "SELECT SUM(vegan_count) FROM saturday_training"
         return await self.execute(sql, fetchval=True)
 
-    async def delete_all(self):
+    async def delete_all_from_saturday(self):
         sql = "TRUNCATE TABLE saturday_training"
+        return await self.execute(sql, fetchrow=True)
+
+    async def delete_all_from_duo(self):
+        sql = "TRUNCATE TABLE duo_run"
         return await self.execute(sql, fetchrow=True)

@@ -1,20 +1,27 @@
 from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 
-markup_main = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
-markup_main.add("Субботняя тренировка и завтрак\nРегистрация/Отмена записи")
-markup_main.add("27.08 20:30 забег с кофейней DUO")
-markup_main.add("F.A.Q.")
-markup_main.add("Оставить отзыв")
+from handlers.users.check_admin import check_admin
+
+
+def main_markup(user_id):
+    markup_main = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
+    if check_admin(user_id):
+        markup_main.add("Субботняя тренировка и завтрак\nРегистрация/Отмена записи")
+        markup_main.add("24.09 20:30 забег с кофейней DUO")
+        markup_main.add("F.A.Q.")
+        markup_main.add("Оставить отзыв")
+        markup_main.add("Режим админа")
+    else:
+        markup_main.add("Субботняя тренировка и завтрак\nРегистрация/Отмена записи")
+        markup_main.add("24.09 20:30 забег с кофейней DUO")
+        markup_main.add("F.A.Q.")
+        markup_main.add("Оставить отзыв")
+
+    return markup_main
+
 
 cancel_markup = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
 cancel_markup.add("Отмена")
-
-markup_main_admin = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
-markup_main_admin.add("Субботняя тренировка и завтрак\nРегистрация/Отмена записи")
-markup_main_admin.add("27.08 20:30 забег с кофейней DUO")
-markup_main_admin.add("F.A.Q.")
-markup_main_admin.add("Оставить отзыв")
-markup_main_admin.add("Режим админа")
 
 admin_keyboard = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
 admin_keyboard.add("Открыть регистрацию")
