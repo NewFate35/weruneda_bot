@@ -12,6 +12,7 @@ async def edit(call: types.CallbackQuery, state: FSMContext):
     if res['status']:
         await state.update_data(new_data=True)
         await bot.send_message(call.from_user.id, "Введите своё ФИО:", reply_markup=keyboards.cancel_markup)
+        await call.message.edit_reply_markup()
         await Training.fullname.set()
     else:
         await bot.send_message(call.from_user.id, "Регистрация уже закрыта! Изменить информацию нельзя")
