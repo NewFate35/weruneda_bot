@@ -89,7 +89,7 @@ async def cancel(message: types.Message, state: FSMContext):
 @dp.message_handler(IsAdmin(), IsPrivateChat(), CommandStart())
 async def bot_start(message: types.Message):
     await db.add_user(message.from_user.id)
-    await message.answer("Приветствую тебя, админ! Mr. Fox🦊 на связи!", reply_markup=markup_main_admin)
+    await message.answer("Приветствую тебя, админ!! Mr. Fox🦊 на связи!", reply_markup=markup_main_admin)
     await message.answer("Нажми на кнопку ниже и обязательно прочтите наши правила!", reply_markup=rules_keyboard)
 
 
