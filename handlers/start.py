@@ -67,9 +67,9 @@ async def new_chat_member(message: types.Message):
                f"в сообщество We|Run|Eda!\nНажми на @weruneda_bot и изучи правила сообщества!"
         logging.info(f"Вступил новый участник - {message['new_chat_member']['first_name']}")
 
+    msg = await message.answer(text=text)
     if len(last_msg) > 0:
         await bot.delete_message(chat_id=message.chat.id, message_id=last_msg[0]['message_id'])
-    msg = await message.answer(text=text)
 
     await db.insert_last_message_id(msg.message_id)
 
@@ -320,7 +320,7 @@ async def without_breakfast(call: types.CallbackQuery, state: FSMContext):
                                     f"Успешная регистрация на тренировку без завтрака!",
                                reply_markup=edit_keyboard)
         await bot.send_message(call.message.from_user.id,
-                               text="Не забудь про оплату!\nГрупповая тренировка - 100₽\nТренировка + завтрак - 300₽",
+                               text="Не забудь про оплату!\nГрупповая тренировка - 100₽\nТренировка + завтрак - 400₽",
                                reply_markup=markup_main_admin)
     else:
         await bot.send_message(call.from_user.id,
@@ -328,7 +328,7 @@ async def without_breakfast(call: types.CallbackQuery, state: FSMContext):
                                     f"Успешная регистрация на тренировку без завтрака!",
                                reply_markup=edit_keyboard)
         await bot.send_message(call.message.from_user.id,
-                               text="Не забудь про оплату!\nГрупповая тренировка - 100₽\nТренировка + завтрак - 300₽",
+                               text="Не забудь про оплату!\nГрупповая тренировка - 100₽\nТренировка + завтрак - 400₽",
                                reply_markup=markup_main)
 
     await state.finish()
@@ -372,14 +372,14 @@ async def save_breakfast_count(message: types.Message, state: FSMContext):
             text=f"ФИО: {FIO}\nТелефон: {phone}\nДетей: {children_count}\nКол-во порций завтрака: {breakfast_count}\n"
                  f"Успешная регистрация на тренировку и {breakfast} завтрак!",
             reply_markup=edit_keyboard)
-        await message.answer(text="Не забудь про оплату!\nГрупповая тренировка - 100₽\nТренировка + завтрак - 300₽",
+        await message.answer(text="Не забудь про оплату!\nГрупповая тренировка - 100₽\nТренировка + завтрак - 400₽",
                              reply_markup=markup_main_admin)
     else:
         await message.answer(
             text=f"ФИО: {FIO}\nТелефон: {phone}\nДетей: {children_count}\nКол-во порций завтрака: {breakfast_count}\n"
                  f"Успешная регистрация на тренировку и {breakfast} завтрак!",
             reply_markup=edit_keyboard)
-        await message.answer(text="Не забудь про оплату!\nГрупповая тренировка - 100₽\nТренировка + завтрак - 300₽",
+        await message.answer(text="Не забудь про оплату!\nГрупповая тренировка - 100₽\nТренировка + завтрак - 400₽",
                              reply_markup=markup_main)
     await state.finish()
 
