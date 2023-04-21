@@ -7,13 +7,13 @@ def main_markup(user_id):
     markup_main = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
     if check_admin(user_id):
         markup_main.add("Субботняя тренировка и завтрак\nРегистрация/Отмена записи")
-        markup_main.add("24.09 20:30 забег с кофейней DUO")
+        # markup_main.add("26.11 18:00 Мафия в кофейне DUO")
         markup_main.add("F.A.Q.")
         markup_main.add("Оставить отзыв")
         markup_main.add("Режим админа")
     else:
         markup_main.add("Субботняя тренировка и завтрак\nРегистрация/Отмена записи")
-        markup_main.add("24.09 20:30 забег с кофейней DUO")
+        # markup_main.add("26.11 18:00 Мафия в кофейне DUO")
         markup_main.add("F.A.Q.")
         markup_main.add("Оставить отзыв")
 

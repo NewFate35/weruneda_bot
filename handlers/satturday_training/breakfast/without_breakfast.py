@@ -25,7 +25,10 @@ async def without_breakfast(call: types.CallbackQuery, state: FSMContext):
                            reply_markup=keyboards.edit_keyboard)
 
     await bot.send_message(call.from_user.id,
-                           text="Не забудь про оплату!\nГрупповая тренировка - 100₽\nТренировка + завтрак - 400₽",
+                           text="➡️Оплата переводом по номеру: +7-912-618-19-37 (Сбербанк/Тинькофф)"
+                                "\nВ назначении платежа указывайте фамилию"
+                                "\n\nТренировка + завтрак - 400₽"
+                                "\nГрупповая тренировка - 100₽",
                            reply_markup=keyboards.main_markup(call.from_user.id))
     await call.message.edit_reply_markup()
     await state.finish()

@@ -11,7 +11,7 @@ class Duo(StatesGroup):
     phone = State()
 
 
-@dp.message_handler(text="24.09 20:30 забег с кофейней DUO")
+@dp.message_handler(text="26.11 18:00 Мафия в кофейне DUO")
 async def start_duo_run(message: types.Message):
     await message.answer("Введите ваше ФИО:",
                          reply_markup=keyboards.cancel_markup)
@@ -30,7 +30,9 @@ async def save_duo_phone(message: types.Message, state: FSMContext):
     duo_data = await state.get_data()
     fio = duo_data['fio']
     await db.add_user_duo_run(fio=fio, telegram_id=message.from_user.id, phone=message.text)
-    await message.answer("Спасибо за регистрацию!\nДо встречи в субботу 24.09 в 20:30 у входа БЦ Высоцкий🤍💙",
+    await message.answer("Спасибо за регистрацию на игру🎭 "
+                         "\n🔹Суббота | 26.11 | 18:00 | БЦ Высоцкий | кофейня DUO🤍💙 "
+                         "\nСтоимость: 300₽",
                          reply_markup=keyboards.main_markup(message.from_user.id))
 
     await state.finish()
