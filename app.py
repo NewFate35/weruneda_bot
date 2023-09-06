@@ -1,8 +1,11 @@
 import random
+from urllib import request
+import requests
 
 from aiogram import executor
 import logging
 
+import config
 from loader import dp, db, scheduler
 import handlers
 # from utils.notify_admins import on_startup_notify
@@ -23,4 +26,4 @@ if __name__ == '__main__':
                         level=logging.INFO,
                         # filename="bot.log"
                         )
-    executor.start_polling(dp, on_startup=on_startup)
+    executor.start_polling(dp, on_startup=on_startup, skip_updates=True)
