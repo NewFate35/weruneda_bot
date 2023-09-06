@@ -13,14 +13,13 @@ async def without_breakfast(call: types.CallbackQuery, state: FSMContext):
     user_id = call.from_user.id
     fullname = reg_data['FIO']
     phone = reg_data['phone']
-    children_count = reg_data['children_count']
 
     if reg_data['new_data']:
         await db.add_or_update_user_data(call.from_user.id, fullname, phone)
-    await db.add_user_training(user_id, fullname, phone, children_count, meat_count=0, vegan_count=0)
+    await db.add_user_training(user_id, fullname, phone, meat_count=0, vegan_count=0)
 
     await bot.send_message(call.from_user.id,
-                           text=f"ФИО: {fullname}\nТелефон: {phone}\nДетей: {children_count}\n"
+                           text=f"ФИО: {fullname}\nТелефон: {phone}\n"
                                 f"Успешная регистрация на тренировку без завтрака!",
                            reply_markup=keyboards.edit_keyboard)
 

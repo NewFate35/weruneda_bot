@@ -45,7 +45,6 @@ class Database:
         user_id BIGINT UNIQUE,
         FIO VARCHAR(255),
         phone VARCHAR(255), 
-        children_count INT,
         meat_count INT,
         vegan_count INT
         );
@@ -73,22 +72,15 @@ class Database:
         message_id BIGINT
         );
         
-        CREATE TABLE IF NOT EXISTS duo_run(
-        id SERIAL PRIMARY KEY,
-        telegram_id BIGINT UNIQUE,
-        fio VARCHAR(255),
-        phone VARCHAR(255)
-        );
-        
         INSERT INTO registration(id, status) VALUES (1, FALSE) ON CONFLICT DO NOTHING ;
         """
         await self.execute(sql, execute=True)
 
-    async def add_user_training(self, user_id, FIO, phone, children_count, meat_count, vegan_count):
-        sql = "INSERT INTO saturday_training(user_id, FIO, phone, children_count, meat_count, vegan_count) " \
-              "VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT(user_id) DO UPDATE " \
-              "SET FIO=$2, phone=$3, children_count=$4, meat_count=$5, vegan_count=$6;"
-        return await self.execute(sql, user_id, FIO, phone, int(children_count), int(meat_count), int(vegan_count),
+    async def add_user_training(self, user_id, FIO, phone, meat_count, vegan_count):
+        sql = "INSERT INTO saturday_training(user_id, FIO, phone, meat_count, vegan_count) " \
+              "VALUES ($1, $2, $3, $4, $5) ON CONFLICT(user_id) DO UPDATE " \
+              "SET FIO=$2, phone=$3, meat_count=$4, vegan_count=$5;"
+        return await self.execute(sql, user_id, FIO, phone, int(meat_count), int(vegan_count),
                                   fetchrow=True)
 
     async def add_user_duo_run(self, telegram_id, fio, phone):
@@ -157,10 +149,6 @@ class Database:
         sql = "SELECT COUNT(*) FROM duo_run"
         return await self.execute(sql, fetchval=True)
 
-    async def children_count(self):
-        sql = "SELECT SUM(children_count) FROM saturday_training"
-        return await self.execute(sql, fetchval=True)
-
     async def meat_count(self):
         sql = "SELECT SUM(meat_count) FROM saturday_training"
         return await self.execute(sql, fetchval=True)
@@ -171,8 +159,4 @@ class Database:
 
     async def delete_all_from_saturday(self):
         sql = "TRUNCATE TABLE saturday_training"
-        return await self.execute(sql, fetchrow=True)
-
-    async def delete_all_from_duo(self):
-        sql = "TRUNCATE TABLE duo_run"
         return await self.execute(sql, fetchrow=True)
