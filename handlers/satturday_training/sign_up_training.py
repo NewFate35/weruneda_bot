@@ -37,14 +37,11 @@ def generate_text(user_info):
     phone = user_info['phone']
     meat_count = user_info['meat_count']
     vegan_count = user_info['vegan_count']
-    children_count = user_info['children_count']
 
     if meat_count > 0:
-        text = f"Вы уже зарегистрированы! \nФИО: {fullname} \nТелефон: {phone} \nДетей: " \
-               f"{children_count}\nКол-во порций завтрака: {meat_count}"
+        text = f"Вы уже зарегистрированы! \nФИО: {fullname} \nТелефон: {phone} \nКол-во порций завтрака: {meat_count}"
     elif vegan_count > 0:
-        text = f"Вы уже зарегистрированы! \nФИО: {fullname} \nТелефон: {phone} \nДетей: " \
-               f"{children_count}\nКол-во порций завтрака: {vegan_count}"
+        text = f"Вы уже зарегистрированы! \nФИО: {fullname} \nТелефон: {phone}\nКол-во порций завтрака: {vegan_count}"
     else:
-        text = f"Вы уже зарегистрированы! \nФИО: {fullname} \nТелефон: {phone} \nДетей:{children_count} \nБез завтрака!"
+        text = f"Вы уже зарегистрированы! \nФИО: {fullname} \nТелефон: {phone} \nБез завтрака!"
     return text
