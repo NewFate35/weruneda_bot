@@ -1,7 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher.filters import BoundFilter
 
-from config import ADMINS
+from config import ADMINS, BANNED_USERS
 
 
 class IsAdmin(BoundFilter):
@@ -24,4 +24,7 @@ class IsPrivateChat(BoundFilter):
         res = False
         if message.chat.type == "private":
             res = True
+        if message.from_user.id in BANNED_USERS:
+            await message.answer("Доступ заблокирован.")
+            res = False
         return res

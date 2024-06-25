@@ -13,3 +13,4 @@ DB_HOST = env.str('DB_HOST')
 
 GROUP_CHAT_ID = env.str('GROUP_CHAT_ID')
 
+BANNED_USERS = [5848097296]
