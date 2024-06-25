@@ -1,11 +1,6 @@
-import random
-from urllib import request
-import requests
-
 from aiogram import executor
 import logging
 
-import config
 from loader import dp, db, scheduler
 import handlers
 # from utils.notify_admins import on_startup_notify

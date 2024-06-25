@@ -60,8 +60,9 @@ inline_answers = {
             "\nПодробнее про наши активности:"
         ),
         # "photos": [get_path("eco_1.png"), get_path("eco_2.png")],
-        "photos": ["AgACAgIAAxkDAALakmZ6QrqF-RNloqN7mNOBpRX_91K5AAKI2TEbRlPQS0DFqgx5A5U8AQADAgADcwADNQQ",
-                   "AgACAgIAAxkDAALak2Z6QrvSU9xxmVEYMn-4pdcdk-SoAAKJ2TEbRlPQS8Xs2EpyGlqEAQADAgADcwADNQQ"]
+        "photos": ["AgACAgIAAxkDAALawGZ6TIuqKzfe_5bWYRBnavq3sKPlAAKy2TEbRlPQSzxB6r51_-BhAQADAgADcwADNQQ",
+                   "AgACAgIAAxkDAALawWZ6TI3FVzN42Q2von86d_iN5PMDAAKz2TEbRlPQS7chDF1wMguOAQADAgADcwADNQQ"],
+        "doc": "BQACAgIAAxkDAALawmZ6TJDm9NxGxtHFuqWOGSFsyMc5AAItTgACRlPQS8ZRHMyHPhVrNQQ"
     },
     2: {
         "text": (

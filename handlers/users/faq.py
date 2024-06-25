@@ -19,6 +19,7 @@ async def faq_answers(call: types.CallbackQuery):
     data = answers.get(code)
     text = data.get("text")
     photos = data.get("photos")
+    doc = data.get("doc")
 
     if isinstance(text, str):
         await call.message.answer(text)
@@ -38,3 +39,6 @@ async def faq_answers(call: types.CallbackQuery):
             if idx + 1 <= len(photos):
                 # await call.message.answer_photo(InputFile(photos[idx]))
                 await call.message.answer_photo(photos[idx])
+
+    if doc:
+        await call.message.answer_document(doc)
