@@ -100,11 +100,14 @@ inline_answers = {
             "\n    •	Оплата принимается с момента открытия регистрации до 9:00 субботы"
             "\n\nУчастие в групповой тренировке без завтрака возможно без предварительной регистрации."
         )
+    },
+    5: {
+        "text": "О сообществе:"
     }
 }
 
 rules_keyboard = InlineKeyboardMarkup(row_width=1)
-button = InlineKeyboardButton(text="Показать правила", callback_data="question_5")
+button = InlineKeyboardButton(text="Показать правила", callback_data="question_1")
 rules_keyboard.add(button)
 
 breakfast_keyboard = InlineKeyboardMarkup(row_width=1)
