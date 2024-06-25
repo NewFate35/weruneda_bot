@@ -1,5 +1,5 @@
 from aiogram import types
-from aiogram.types import InputFile, MediaGroup
+from aiogram.types import InputFile, MediaGroup, InputMediaDocument
 
 import keyboards
 from filters import IsPrivateChat
@@ -27,7 +27,7 @@ async def faq_answers(call: types.CallbackQuery):
                 media_group = MediaGroup()
                 for photo in photos:
                     # media_group.attach_document(InputFile(photo))
-                    media_group.attach_document(photo)
+                    media_group.attach_photo(photo)
                 await call.message.answer_media_group(media_group)
             else:
                 # await call.message.answer_photo(InputFile(photos[0]))
