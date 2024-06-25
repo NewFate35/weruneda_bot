@@ -1,9 +1,9 @@
 from aiogram import types
-from aiogram.types import InputFile
+from aiogram.types import InputFile, MediaGroup
 
-from filters import IsPrivateChat
 import keyboards
-from loader import dp, bot
+from filters import IsPrivateChat
+from loader import dp
 
 
 @dp.message_handler(IsPrivateChat(), text="F.A.Q.")
@@ -13,19 +13,25 @@ async def faq(message: types.Message):
 
 @dp.callback_query_handler(text_contains='question_')
 async def faq_answers(call: types.CallbackQuery):
-    if call.data and call.data.startswith("question_"):
-        code = call.data[-1:]
-        if code.isdigit():
-            code = int(code)
-        for k, v in keyboards.inline_answers.items():
-            if k == code:
-                if code == 3:
-                    await bot.send_photo(call.from_user.id, caption=v, photo=InputFile('парковка.png'))
-                elif code == 5:
-                    await bot.send_document(call.from_user.id,
-                                            document=InputFile(f"Правила_сообщества.pdf"),
-                                            caption="Правила корпоративной культуры сообщества We|Run|Eda")
-                else:
-                    await bot.send_message(call.from_user.id, text=v)
-        else:
-            await bot.answer_callback_query(call.id)
+    code = int(call.data[-1])
+    answers = keyboards.inline_answers
+
+    data = answers.get(code)
+    text = data.get("text")
+    photos = data.get("photos")
+
+    if isinstance(text, str):
+        await call.message.answer(text)
+        if photos:
+            if len(photos) > 1:
+                media_group = MediaGroup()
+                for photo in photos:
+                    media_group.attach_document(InputFile(photo))
+                await call.message.answer_media_group(media_group)
+            else:
+                await call.message.answer_photo(InputFile(photos[0]))
+    else:
+        for idx, txt in enumerate(text):
+            await call.message.answer(txt)
+            if idx + 1 <= len(photos):
+                await call.message.answer_photo(InputFile(photos[idx]))

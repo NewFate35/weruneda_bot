@@ -7,10 +7,11 @@ from .training_states_group import Training
 from keyboards import breakfast_keyboard
 
 
-@dp.message_handler(IsPrivateChat(), state=Training.phone)
+# content_types=types.ContentType.CONTACT,
+@dp.message_handler(IsPrivateChat(), content_types=types.ContentType.CONTACT, state=Training.phone)
 async def save_phone(message: types.Message, state: FSMContext):
-    await state.update_data(phone=message.text)
+    phone = message.contact.phone_number
+    await state.update_data(phone=phone)
     await message.answer("Выберите подходящий для вас вариант", reply_markup=breakfast_keyboard)
     await Training.breakfast.set()
-    # await message.answer("Вы будете с детьми? Если да, то отправьте их кол-во, иначе - 0")
-    # await Training.children_count.set()
+
