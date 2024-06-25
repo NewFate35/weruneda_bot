@@ -26,12 +26,15 @@ async def faq_answers(call: types.CallbackQuery):
             if len(photos) > 1:
                 media_group = MediaGroup()
                 for photo in photos:
-                    media_group.attach_document(InputFile(photo))
+                    # media_group.attach_document(InputFile(photo))
+                    media_group.attach_document(photo)
                 await call.message.answer_media_group(media_group)
             else:
-                await call.message.answer_photo(InputFile(photos[0]))
+                # await call.message.answer_photo(InputFile(photos[0]))
+                await call.message.answer_photo(photos[0])
     else:
         for idx, txt in enumerate(text):
             await call.message.answer(txt)
             if idx + 1 <= len(photos):
-                await call.message.answer_photo(InputFile(photos[idx]))
+                # await call.message.answer_photo(InputFile(photos[idx]))
+                await call.message.answer_photo(photos[idx])
